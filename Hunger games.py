@@ -1,19 +1,11 @@
 import random
+import ru_local as ru
 
-print('''Добрый день, уважаемые участники! Мы рады приветствовать вас на голодных играх за звание лучшего питониста НГУ!
-      Правила игры просты:
-      1. Каждый игровой час вы должны принимать решение о действиях на его протяжении. Всего вам доступно 5 вариантов,
-      каждый из них влияет как на ваши ресурсы, так и на взаимодействие с другими игроками.
-      2. Иногда на арене возникают случайные явления: они могут как навредить вам, так и помочь.
-      3. Победитель - либо один, последний оставшийся в живых, либо никто :)
-      4. Все из вас в равных условиях. Победе способствует только ваша стратегия и сила вселенского хаоса.
-      
-      Назовите свои имена, о воины прогерского легиона!
-      ''')
+print(ru.INTRODUCTION)
 
 players = []
 for n in range(4):
-    players.append(input(f'Игрок №{n + 1}: '))
+    players.append(input(f'{ru.PLAYER_N}{n + 1}: '))
 
 HP = [100, 100, 100, 100]
 weapons = [10, 10, 10, 10]
@@ -24,27 +16,25 @@ medicine = [10, 10, 10, 10]
 def stats():
     for player in range(4):
         if HP[player] <= 0:
-            print(f'{player + 1}-й игрок мертв')
+            print(f'{player + 1}{ru.PLAYER_DEAD}')
         else:
-            print(f'''Показатели {player + 1}-го игрока: 
+            print(f'''{ru.STATS}{player + 1}{ru.FOR}: 
         HP: {HP[player]}
-        Наносимый урон: {weapons[player]}
-        Шанс получить урон: 1 к {vulnerability[player]}
-        Может восстановить за ход: {medicine[player]} HP''')
+        {ru.DAMAGE}: {weapons[player]}
+        {ru.CHANCE}{vulnerability[player]}
+        {ru.REGENERATION}: {medicine[player]} HP''')
 
 
 def acid_rain():
-    print('''
-~~~Приближаются кислотные облака...
-    ''')
+    print(ru.ACID_CLOUDS)
     damage = random.randint(30, 50)
     if random.randint(1, 3) == 1:
-        print(f'''Кислотный дождь ранит всех на {damage} HP~~~
+        print(f'''{ru.ACID_DAMAGE}{damage} HP~~~
         ''')
         for player in range(4):
             HP[player] -= damage
     else:
-        print('''... и проходят мимо~~~
+        print(f'''{ru.PASS_BY}
         ''')
 
 
@@ -53,59 +43,52 @@ def blessing():
     up = random.randint(20, 60)
     HP[lucky] += up
     print(f'''
-    *** {players[lucky]}, вам везет! Вселенная  дает вам +{up} HP ***
+    *** {players[lucky]}, {ru.LUCKY} +{up} HP ***
     ''')
 
 
 def move():
-    return int(input('''
-    Ваше действие:
-    1. Атаковать соперника
-    2. Улучшить оружие
-    3. Подлечиться
-    4. Снизить уязвимость
-    5. Найти лекарства
-    [1-5]: '''))
+    return int(input(ru.MOVE))
 
 
 def attack():
-    target = int(input('Атаковать игрока №: ')) - 1
+    target = int(input(ru.ATTACK)) - 1
     if random.randint(1, vulnerability[target]) == 1:
         HP[target] -= weapons[making_move]
-        print(f'{players[target]} получает урон равный {weapons[making_move]} HP')
+        print(f'{players[target]} {ru.IS_DAMAGED} {weapons[making_move]} HP')
     else:
-        print(f'{players[target]} уворачивается от атаки')
+        print(f'{players[target]} {ru.DODGE}')
 
 
 def upgrade_weapon():
     weapons[making_move] += 10
-    print(f'{players[making_move]} теперь имеет оружие, наносящее на 10 HP больше урона')
+    print(f'{players[making_move]} {ru.WEAPON_UP}')
 
 
 def heal():
     HP[making_move] += medicine[making_move]
-    print(f'{players[making_move]} восстанавливает {medicine[making_move]} HP')
+    print(f'{players[making_move]} {ru.HEAL} {medicine[making_move]} HP')
 
 
 def lower_vulnerability():
     vulnerability[making_move] += 1
-    print(f'{players[making_move]} уменьшает свои шансы подвергнуться атаке до 1 к {vulnerability[making_move]}')
+    print(f'{players[making_move]} {ru.DEFENCE} {vulnerability[making_move]}')
 
 
 def upgrade_heal():
     medicine[making_move] += 10
-    print(f'{players[making_move]} теперь может восстанавливать на 10 HP больше')
+    print(f'{players[making_move]} {ru.MEDICINE}')
 
 
 alive = players
 hour = 1
 making_move = 0
 while len(alive) > 1:
-    print(f'___________________________{hour}-й час противостояния___________________________')
+    print(f'___________________________{hour}{ru.HOUR}___________________________')
     for making_move in 0, 1, 2, 3:
         if players[making_move] in alive:
             print(f'''
-            Ходит {players[making_move]}.''')
+            {ru.MOVING} {players[making_move]}.''')
             decision = move()
             match decision:
                 case 1:
@@ -121,12 +104,12 @@ while len(alive) > 1:
             for player in range(4):
                 if HP[player] <= 0:
                     alive.remove(players[player])
-                    print(f'Из состязания выбыл/а: {players[player]}')
+                    print(f'{ru.IS_OUT}: {players[player]}')
     blessing()
     acid_rain()
     stats()
     hour += 1
 if len(alive) != 0:
-    print(f'Поздравляем! {alive[0]} - лучший питонист НГУ!')
+    print(f'{ru.CONGRATULATIONS} {alive[0]} - {ru.BEST}')
 else:
-    print(f'Все умерли! А это значит, хаос победил)')
+    print(ru.ALL_DEAD)
