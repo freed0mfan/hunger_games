@@ -18,7 +18,7 @@ def stats():
         if HP[player] <= 0:
             print(f'{player + 1}{ru.PLAYER_DEAD}')
         else:
-            print(f'''{ru.STATS}{player + 1}{ru.FOR}: 
+            print(f'''{ru.STATS} {player + 1}{ru.FOR}: 
         HP: {HP[player]}
         {ru.DAMAGE}: {weapons[player]}
         {ru.CHANCE}{vulnerability[player]}
